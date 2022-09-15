@@ -1,6 +1,12 @@
 /* eslint-disable object-curly-newline */
 const Card = require('../models/card');
 
+const getCard = (req, res) => {
+  Card.find({})
+    .then(cards => res.send(cards))
+    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+};
+
 const createCard = (req, res) => {
   const { name, link, owner, likes, createdAt } = req.body;
   Card.create({ name, link, owner, likes, createdAt })
@@ -13,8 +19,20 @@ const createCard = (req, res) => {
     });
 };
 
+const deleteCard = (req, res) => {
+
+};
+
+const likeCard = (req, res) => {
+
+};
+
+const dislikeCard = (req, res) => {
+
+};
+
 module.exports = {
-  createCard,
+  getCard, createCard, deleteCard, likeCard, dislikeCard,
 };
 
 module.exports.createCard = (req, res) => {

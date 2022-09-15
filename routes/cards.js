@@ -1,17 +1,17 @@
 const router = require('express').Router();
 
-// const { createCard } = require('../controllers/cards');
+const {
+  getCard, createCard, deleteCard, likeCard, dislikeCard,
+} = require('../controllers/cards');
 
-// router.get('/cards', createUser);
+router.get('/cards', getCard);
 
-// router.post('/cards', createUser);
+router.post('/cards', createCard);
 
-// router.delete('/cards/:userId', createUser);
+router.delete('/cards/:userId', deleteCard);
 
-// В каждом роуте понадобится _id пользователя, совершающего операцию. req.user._id
+router.put('/cards/:userId/likes', likeCard);
 
-// router.put('/cards/:userId/likes', createUser);
-
-// router.delete('/cards/:userId/likes', createUser);
+router.delete('/cards/:userId/likes', dislikeCard);
 
 module.exports = router;
