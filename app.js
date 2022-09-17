@@ -3,19 +3,18 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const { PORT = 3000 } = process.env;
-const routerCard = require('./routes/cards');
+const routerCards = require('./routes/cards');
 const routerUser = require('./routes/users');
 
 const app = express();
 
-mongoose.connect(
-  'mongodb://localhost:27017/mestodb',
-  async (err) => {
-    if (err) throw err;
-    // eslint-disable-next-line no-console
-    console.log('conncted to db');
-  },
-);
+mongoose.connect('mongodb://localhost:27017/mestodb', {
+  useNewUrlParser: true,
+}, async (err) => {
+  if (err) throw err;
+  // eslint-disable-next-line no-console
+  console.log('conncted to db');
+});
 
 app.use(bodyParser.json());
 
@@ -27,7 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use('/', routerUser);
-app.use('/', routerCard);
+app.use('/', routerCards);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
