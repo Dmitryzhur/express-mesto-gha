@@ -14,10 +14,12 @@ const getUser = (req, res) => {
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(() => {
-      throw new Error('Пользователь не найден');
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: 'Пользователь не найден' });
+      }
+      res.send(user);
     })
-    .then((user) => res.send(user))
     .catch((error) => {
       if (error.name === 'CastError') {
         res.status(400).send({ message: 'Переданы некорректные данные при запросе пользователей' });
@@ -46,7 +48,7 @@ const createUser = (req, res) => {
 };
 
 const updateUser = (req, res) => {
-  const { name, about, _id = req.params.userId } = req.body;
+  const { name, about, _id = req.user._id } = req.body;
 
   User.findByIdAndUpdate(_id, { name, about }, {
     new: true,
@@ -68,7 +70,7 @@ const updateUser = (req, res) => {
 };
 
 const updateAvatar = (req, res) => {
-  const { avatar, _id = req.params.userId } = req.body;
+  const { avatar, _id = req.user._id } = req.body;
 
   User.findByIdAndUpdate(_id, { avatar }, {
     new: true,
