@@ -14,11 +14,14 @@ const getUser = (req, res) => {
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.send({ data: user }))
+    .orFail(() => {
+      throw new Error('Пользователь не найден');
+    })
+    .then((user) => res.send(user))
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if (error.name === 'CastError') {
         res.status(400).send({ message: 'Переданы некорректные данные при запросе пользователей' });
-      } else if (error.name === 'CastError') {
+      } else if (error.name === 'NotFound') {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
@@ -49,14 +52,17 @@ const updateUser = (req, res) => {
     new: true,
     runValidators: true,
   })
-    .then((user) => res.send({ data: user }))
+    .orFail(() => {
+      throw new Error('Пользователь не найден');
+    })
+    .then((user) => res.send(user))
     .catch((error) => {
       if (error.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
       } else if (error.name === 'CastError') {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
-        res.status(500).send({ message: 'Данные не прошли валидацию. Либо произошло что-то совсем немыслимое' });
+        res.status(500).send({ message: 'Произошла ошибка на сервере' });
       }
     });
 };
@@ -68,6 +74,9 @@ const updateAvatar = (req, res) => {
     new: true,
     runValidators: true,
   })
+    .orFail(() => {
+      throw new Error('Пользователь не найден');
+    })
     .then((user) => res.send(user))
     .catch((error) => {
       if (error.name === 'ValidationError') {
@@ -75,7 +84,7 @@ const updateAvatar = (req, res) => {
       } else if (error.name === 'CastError') {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
-        res.status(500).send({ message: 'Данные не прошли валидацию. Либо произошло что-то совсем немыслимое' });
+        res.status(500).send({ message: 'Произошла ошибка на сервере' });
       }
     });
 };

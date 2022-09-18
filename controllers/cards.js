@@ -52,7 +52,7 @@ const likeCard = (req, res) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка' });
       } else if (error.name === 'NotFound') {
-        res.status(404).send({ message: 'Карточка не найдена' });
+        res.status(error.status).send({ message: error.message });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
@@ -70,7 +70,7 @@ const dislikeCard = (req, res) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка' });
       } else if (error.name === 'NotFound') {
-        res.status(404).send({ message: 'Карточка не найдена' });
+        res.status(error.status).send({ message: error.message });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
