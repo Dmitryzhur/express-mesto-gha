@@ -12,8 +12,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 }, async (err) => {
   if (err) throw err;
-  // eslint-disable-next-line no-console
-  console.log('conncted to db');
 });
 
 app.use(bodyParser.json());
@@ -28,7 +26,4 @@ app.use((req, res, next) => {
 app.use('/', routerUser);
 app.use('/', routerCards);
 
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log('Сервер запущен');
-});
+app.listen(PORT);

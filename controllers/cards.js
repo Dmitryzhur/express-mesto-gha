@@ -1,4 +1,3 @@
-/* eslint-disable object-curly-newline */
 const Card = require('../models/card');
 
 const getCard = (req, res) => {
