@@ -4,7 +4,7 @@ const STATUS_CODE = require('../utils/statusCode');
 const getCard = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((error) => res.status(STATUS_CODE.serverError).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(STATUS_CODE.serverError).send({ message: 'Произошла ошибка' }));
 };
 
 const createCard = (req, res) => {

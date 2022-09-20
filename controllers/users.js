@@ -4,7 +4,7 @@ const STATUS_CODE = require('../utils/statusCode');
 const getUser = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((error) => res.status(STATUS_CODE.serverError).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(STATUS_CODE.serverError).send({ message: 'Произошла ошибка' }));
 };
 
 const getUserById = (req, res) => {
@@ -77,7 +77,7 @@ const updateAvatar = (req, res) => {
     .catch((error) => {
       if (error.name === 'ValidationError') {
         res.status(STATUS_CODE.dataError).send({ message: 'Переданы некорректные данные' });
-	  } else if (error.message === 'Пользователь не найден') {
+      } else if (error.message === 'Пользователь не найден') {
         res.status(STATUS_CODE.notFound);
       } else {
         res.status(STATUS_CODE.serverError).send({ message: 'Произошла ошибка на сервере' });
