@@ -1,33 +1,26 @@
 const User = require('../models/user');
+const STATUS_CODE = require('../utils/statusCode');
 
 const getUser = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((error) => {
-      if (error.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при запросе пользователей' });
-      } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
-      }
-    });
+    .catch((error) => res.status(STATUS_CODE.serverError).send({ message: 'Произошла ошибка' }));
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(STATUS_CODE.notFound).send({ message: 'Пользователь не найден' });
         return;
       }
       res.send(user);
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при запросе пользователей' });
-      } else if (error.name === 'NotFound') {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(STATUS_CODE.dataError).send({ message: 'Переданы некорректные данные при запросе пользователей' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(STATUS_CODE.serverError).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -41,9 +34,9 @@ const createUser = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+        res.status(STATUS_CODE.dataError).send({ message: 'Переданы некорректные данные при создании пользователя' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(STATUS_CODE.serverError).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -61,11 +54,11 @@ const updateUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else if (error.name === 'CastError') {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(STATUS_CODE.dataError).send({ message: 'Переданы некорректные данные' });
+      } else if (error.message === 'Пользователь не найден') {
+        res.status(STATUS_CODE.notFound).send(error.message);
       } else {
-        res.status(500).send({ message: 'Произошла ошибка на сервере' });
+        res.status(STATUS_CODE.serverError).send({ message: 'Произошла ошибка на сервере' });
       }
     });
 };
@@ -83,11 +76,11 @@ const updateAvatar = (req, res) => {
     .then((user) => res.send(user))
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else if (error.name === 'CastError') {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(STATUS_CODE.dataError).send({ message: 'Переданы некорректные данные' });
+	  } else if (error.message === 'Пользователь не найден') {
+        res.status(STATUS_CODE.notFound);
       } else {
-        res.status(500).send({ message: 'Произошла ошибка на сервере' });
+        res.status(STATUS_CODE.serverError).send({ message: 'Произошла ошибка на сервере' });
       }
     });
 };
