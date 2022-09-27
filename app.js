@@ -19,6 +19,8 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
   req.user = {
     _id: '632365b1861bd8afa8d6c6da', // вставьте сюда _id созданного в предыдущем пункте пользователя
+	// user: ,
+	// password: ,
   };
 
   next();
