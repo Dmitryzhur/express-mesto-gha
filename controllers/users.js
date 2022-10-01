@@ -53,22 +53,19 @@ const createUser = (req, res) => {
 const login = (req, res) => {
 	const { email, password } = req.body;
   
-	User.findOne({ email })
+	User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error('Неправильные почта или пароль'));
       }
 
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        // хеши не совпали — отклоняем промис
-        return Promise.reject(new Error('Неправильные почта или пароль'));
-      }
+	  const token = jwt.sign({ _id: user._id }, 'secret-code', { expiresIn: '7d' });
 
-      // аутентификация успешна
-      res.send({ message: 'Всё верно!' });
+      res
+	  	.cookie('access_token', token, {
+       	  httpOnly: true,
+		})
+        .send({ message: 'Аутентификация прошла успешно' });
     })
     .catch((err) => {
       res
@@ -121,6 +118,17 @@ const updateAvatar = (req, res) => {
     });
 };
 
+const getCurrentUser = (req, res, next) => {
+	User.findById(req.user._id)
+	  .then((user) => {
+		if (!user) {
+		  next(new Error('Пользователь не найден'));
+		}
+		return res.status(200).send(user);
+	  })
+	  .catch(next);
+  };
+
 module.exports = {
-  getUser, getUserById, createUser, updateUser, updateAvatar, login,
+  getUser, getUserById, createUser, updateUser, updateAvatar, login, getCurrentUser,
 };
