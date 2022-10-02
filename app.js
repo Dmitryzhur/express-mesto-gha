@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -15,15 +16,13 @@ const NotFound = require('./errors/NotFound');
 
 const app = express();
 
+mongoose.connect('mongodb://localhost:27017/mestodb', {
+  useNewUrlParser: true,
+});
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -33,14 +32,20 @@ app.post('/signup', celebrate({
     avatar: Joi.string()
       .uri()
       .regex(
-        /https?:\/\/(\w{3}\.)?[1-9a-z\-.]{1,}\.\w{2,}(\/[1-90a-z-._~:/?#[\]@!$&'()*+,;=]{1,}\/?)?#?/i,
+        /https?:\/\/(\w{3}\.)?[1-9a-z\-.]{1,}\.\w{2,}(\/[1-90a-z-._~:/?#[@!$&'()*+,;=]{1,}\/?)?#?/i,
       ),
   }),
 }), createUser);
 
-app.use(auth);
-app.use('/', routerUser);
-app.use('/', routerCards);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
+
+app.use('/', auth, routerUser);
+app.use('/', auth, routerCards);
 app.use('*', (req, res, next) => {
   next(new NotFound('Страница не найдена'));
 });
@@ -48,9 +53,4 @@ app.use('*', (req, res, next) => {
 app.use(errors());
 app.use(getDefaultError);
 
-async function main() {
-  await mongoose.connect('mongodb://localhost:27017/mestodb');
-  app.listen(PORT);
-}
-
-main();
+app.listen(PORT);
