@@ -15,12 +15,6 @@ const NotFound = require('./errors/NotFound');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
-  useNewUrlParser: true,
-}, async (err) => {
-  if (err) throw err;
-});
-
 app.use(bodyParser.json());
 app.use(cookieParser());
 
@@ -54,4 +48,9 @@ app.use('*', (req, res, next) => {
 app.use(errors());
 app.use(getDefaultError);
 
-app.listen(PORT);
+async function main() {
+  await mongoose.connect('mongodb://localhost:27017/mestodb');
+  app.listen(PORT);
+}
+
+main();
