@@ -1,8 +1,6 @@
 const User = require('../models/user');
 const STATUS_CODE = require('../errors/statusCode');
 const BadRequest = require('../errors/BadRequest');
-const Unauthorized = require('../errors/Unauthorized');
-const Forbidden = require('../errors/Forbidden');
 const NotFound = require('../errors/NotFound');
 const ConflictError = require('../errors/ConflictError');
 
