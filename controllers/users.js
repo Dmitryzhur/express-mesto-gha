@@ -50,28 +50,23 @@ const createUser = (req, res) => {
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
 	const { email, password } = req.body;
   
-	User.findUserByCredentials(email, password)
+	return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error('Неправильные почта или пароль'));
       }
 
 	  const token = jwt.sign({ _id: user._id }, 'secret-code', { expiresIn: '7d' });
-
       res
 	  	.cookie('access_token', token, {
        	  httpOnly: true,
 		})
-        .send({ message: 'Аутентификация прошла успешно' });
+        .send({ message: `Аутентификация прошла успешно`, token });
     })
-    .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
-    });
+    .catch(next);
   };
 
 const updateUser = (req, res) => {
@@ -119,12 +114,11 @@ const updateAvatar = (req, res) => {
 };
 
 const getCurrentUser = (req, res, next) => {
-	User.findById(req.user._id)
+	return User.findById(req.user._id)
 	  .then((user) => {
-		if (!user) {
-		  next(new Error('Пользователь не найден'));
-		}
-		return res.status(200).send(user);
+		!user
+        ? next(new Error('Пользователь не найден'))
+        : res.status(200).send(user);
 	  })
 	  .catch(next);
   };

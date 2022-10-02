@@ -6,11 +6,11 @@ const {
 
 routerUser.get('/users', getUser);
 
+routerUser.get('/users/me', getCurrentUser);
+
 routerUser.get('/users/:userId', getUserById);
 
 routerUser.post('/users/me', login);
-
-routerUser.get('/users/me', getCurrentUser);
 
 routerUser.patch('/users/me', updateUser);
 

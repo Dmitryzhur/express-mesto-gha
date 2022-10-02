@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const auth = (req, res, next, err) => {
-  console.log('req.cookies =', req.cookies);
+const auth = (req, res, next) => {
   const token = req.cookies.access_token;
   if (!token) {
     next(new Error('Необходима авторизация'));
@@ -10,14 +9,13 @@ const auth = (req, res, next, err) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, 'some-secret-key');
+    payload = jwt.verify(token, 'secret-code');
   } catch (err) {
     next(new Error('Необходима авторизация'));
 	return;
   }
 
   req.user = payload; // добавляем пейлоуд токена в объект запроса
-
   next(); // отправляем запрос дальше
 };
 
