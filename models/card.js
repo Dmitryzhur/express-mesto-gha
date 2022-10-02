@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const isUrl = require('validator/lib/isUrl');
+const isUrl = require('validator/lib/isUrl'); // eslint-disable-line
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -11,10 +11,10 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
-	validate: {
-		validator: (link) => isUrl(link),
-		message: 'Link validation failed'
-	  },
+    validate: {
+      validator: (link) => isUrl(link),
+      message: 'Link validation failed',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

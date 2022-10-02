@@ -18,28 +18,28 @@ const createCard = (req, res, next) => {
       res.send(card);
     })
     .catch((err) => {
-		err.name === 'ValidationError'
-		? next(new BadRequest('Переданы некорректные данные при создании карточки'))
-		: next(err);
+      err.name === 'ValidationError' // eslint-disable-line
+        ? next(new BadRequest('Переданы некорректные данные при создании карточки'))
+        : next(err);
     });
 };
 
 const deleteCard = (req, res, next) => {
-	Card.findById(req.params.cardId)
+  Card.findById(req.params.cardId)
     .orFail(() => {
-		throw new NotFound('Карточка не найдена');
-	})
-	.then((card) => {
+      throw new NotFound('Карточка не найдена');
+    })
+    .then((card) => {
       if (card.owner.toString() !== req.user._id) {
         throw next(new Forbidden('Данную карточку удалить нельзя. Недостаточно прав.'));
       }
       Card.findByIdAndRemove(req.params.cardId)
         .then(() => res.status(STATUS_CODE.success).send({ message: 'Карточка удалена' }))
         .catch((err) => {
-			err.name === 'CastError'
-			? next(new BadRequest('Переданы некорректные данные для удаления карточки'))
-			: next(err);
-		});
+          err.name === 'CastError' // eslint-disable-line
+            ? next(new BadRequest('Переданы некорректные данные для удаления карточки'))
+            : next(err);
+        });
     })
     .catch((err) => next(err));
 };
@@ -51,14 +51,14 @@ const likeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      !card
-		? next(new NotFound('Карточка не найдена')) 
-		: res.send(card);
+      !card // eslint-disable-line
+        ? next(new NotFound('Карточка не найдена'))
+        : res.send(card);
     })
     .catch((err) => {
-		err.name === 'CastError'
+      err.name === 'CastError' // eslint-disable-line
         ? next(new BadRequest('Переданы некорректные данные для постановки лайка'))
-		: next(err);
+        : next(err);
     });
 };
 
@@ -69,14 +69,14 @@ const dislikeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-	  !card
-		? next(new NotFound('Карточка не найдена')) 
-		: res.send(card);
+	  !card // eslint-disable-line
+        ? next(new NotFound('Карточка не найдена'))
+        : res.send(card);
     })
     .catch((err) => {
-		err.name === 'CastError'
+      err.name === 'CastError' // eslint-disable-line
         ? next(new BadRequest('Переданы некорректные данные для снятия лайка'))
-		: next(err);
+        : next(err);
     });
 };
 
