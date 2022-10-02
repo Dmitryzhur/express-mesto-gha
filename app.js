@@ -2,12 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 
 const { PORT = 3000 } = process.env;
 const routerCards = require('./routes/cards');
 const routerUser = require('./routes/users');
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
+const getDefaultError = require('./middlewares/getDefaultError');
 
 const app = express();
 
@@ -22,20 +25,15 @@ app.use(cookieParser());
 
 app.post('/signin', login);
 app.post('/signup', createUser);
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '632365b1861bd8afa8d6c6da', // вставьте сюда _id созданного в предыдущем пункте пользователя
-// 	// user: ,
-// 	// password: ,
-//   };
 
-//   next();
-// });
 app.use(auth);
 app.use('/', routerUser);
 app.use('/', routerCards);
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Страница не найдена' });
 });
+
+app.use(errors());
+app.use(getDefaultError);
 
 app.listen(PORT);
