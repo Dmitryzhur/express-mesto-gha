@@ -1,4 +1,4 @@
-const Card = require('../models/card');
+const Card = require('../models/card').default;
 const STATUS_CODE = require('../errors/statusCode');
 const BadRequest = require('../errors/BadRequest');
 const Forbidden = require('../errors/Forbidden');
@@ -18,7 +18,7 @@ const createCard = (req, res, next) => {
       res.send(card);
     })
     .catch((err) => {
-      err.name === 'ValidationError' // eslint-disable-line
+			err.name === 'ValidationError' // eslint-disable-line
         ? next(new BadRequest('Переданы некорректные данные при создании карточки'))
         : next(err);
     });
@@ -36,7 +36,7 @@ const deleteCard = (req, res, next) => {
       Card.findByIdAndRemove(req.params.cardId)
         .then(() => res.status(STATUS_CODE.success).send({ message: 'Карточка удалена' }))
         .catch((err) => {
-          err.name === 'CastError' // eslint-disable-line
+					err.name === 'CastError' // eslint-disable-line
             ? next(new BadRequest('Переданы некорректные данные для удаления карточки'))
             : next(err);
         });
@@ -51,12 +51,12 @@ const likeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      !card // eslint-disable-line
+			!card // eslint-disable-line
         ? next(new NotFound('Карточка не найдена'))
         : res.send(card);
     })
     .catch((err) => {
-      err.name === 'CastError' // eslint-disable-line
+			err.name === 'CastError' // eslint-disable-line
         ? next(new BadRequest('Переданы некорректные данные для постановки лайка'))
         : next(err);
     });
@@ -69,12 +69,12 @@ const dislikeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-	  !card // eslint-disable-line
+			!card // eslint-disable-line
         ? next(new NotFound('Карточка не найдена'))
         : res.send(card);
     })
     .catch((err) => {
-      err.name === 'CastError' // eslint-disable-line
+			err.name === 'CastError' // eslint-disable-line
         ? next(new BadRequest('Переданы некорректные данные для снятия лайка'))
         : next(err);
     });
