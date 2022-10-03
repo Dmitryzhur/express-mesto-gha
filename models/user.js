@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
-const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const Unauthorized = require('../errors/Unauthorized');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -22,10 +22,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    validate: {
-      validator: (link) => validator.isUrl(link),
-      message: 'Avatar validation failed',
-    },
   },
   email: {
     type: String,
@@ -47,13 +43,13 @@ userSchema.statics.findUserByCredentials = function (email, password) { // eslin
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new Error('Неправильные почта или пароль');
+        throw new Unauthorized('Неправильные почта или пароль');
       }
 
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            throw new Error('Неправильные почта или пароль');
+            throw new Unauthorized('Неправильные почта или пароль');
           }
 
           return user; // user доступен
