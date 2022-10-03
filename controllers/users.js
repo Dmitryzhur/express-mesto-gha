@@ -47,7 +47,14 @@ const createUser = (req, res, next) => {
       password: hash, // записываем хеш в базу
     }))
     .then((user) => {
-      res.send(user);
+      const userData = {
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      };
+      res.send(userData);
     })
     .catch((err) => {
 	  err.name === 'ValidationError' // eslint-disable-line
