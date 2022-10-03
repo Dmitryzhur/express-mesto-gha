@@ -77,7 +77,7 @@ const login = (req, res, next) => {
         .cookie('access_token', token, {
           httpOnly: true,
         })
-        .send({ message: 'Аутентификация прошла успешно', token });
+        .send({ message: 'Аутентификация прошла успешно' });
     })
     .catch(next);
 };

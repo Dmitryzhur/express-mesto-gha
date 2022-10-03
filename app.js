@@ -7,8 +7,8 @@ const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 
 const { PORT = 3000 } = process.env;
-const routerCards = require('./routes/cards');
-const routerUser = require('./routes/users');
+const routesCards = require('./routes/cards');
+const routesUser = require('./routes/users');
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
 const getDefaultError = require('./middlewares/getDefaultError');
@@ -44,8 +44,9 @@ app.post('/signin', celebrate({
   }),
 }), login);
 
-app.use('/', auth, routerUser);
-app.use('/', auth, routerCards);
+app.use(auth);
+app.use('/', routesUser);
+app.use('/', routesCards);
 app.use('*', (req, res, next) => {
   next(new NotFound('Страница не найдена'));
 });

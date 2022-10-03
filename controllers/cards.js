@@ -1,4 +1,4 @@
-const Card = require('../models/card').default;
+const Card = require('../models/card');
 const STATUS_CODE = require('../errors/statusCode');
 const BadRequest = require('../errors/BadRequest');
 const Forbidden = require('../errors/Forbidden');
